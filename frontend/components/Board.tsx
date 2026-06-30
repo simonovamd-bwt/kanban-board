@@ -32,6 +32,10 @@ function Board({ board, onUpdateBoard }: BoardProps) {
     boardRef.current = board;
   }, [board]);
 
+  // Monotonic counter for optimistic placeholder ids so concurrent adds (even
+  // with identical titles) never collide.
+  const tempIdRef = useRef(0);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       // Require a small drag before activating so clicks (e.g. delete) don't
@@ -84,7 +88,7 @@ function Board({ board, onUpdateBoard }: BoardProps) {
     (columnId: string, title: string, details: string) => {
       // Optimistically insert a placeholder, then reconcile with the server's
       // card (which carries the real id) — or roll back on failure.
-      const tempId = `temp-${columnId}-${title}`;
+      const tempId = `temp-${(tempIdRef.current += 1)}`;
       onUpdateBoard((prev) => ({
         ...prev,
         columns: prev.columns.map((col) =>
@@ -130,6 +134,10 @@ function Board({ board, onUpdateBoard }: BoardProps) {
       const sourceColumnId = active.data.current?.columnId as string | undefined;
       const overId = over.id as UniqueIdentifier;
 
+      // An optimistic placeholder has no server id yet — moving it would PATCH a
+      // non-existent card and trigger a full resync. Ignore the drag.
+      if (cardId.startsWith('temp-')) return;
+
       const targetColumn = current.columns.find((col) => col.id === overId);
       const targetCard = current.columns
         .flatMap((col) => col.cards.map((c) => ({ card: c, columnId: col.id })))
@@ -144,11 +152,14 @@ function Board({ board, onUpdateBoard }: BoardProps) {
       const targetColumnId = targetCard?.columnId ?? targetColumn?.id;
       if (!targetColumnId) return;
 
-      if (sourceColumnId === targetColumnId && targetCard) {
-        const targetCardIndex = sourceColumn.cards.findIndex((c) => c.id === overId);
+      if (sourceColumnId === targetColumnId) {
         const sourceCardIndex = sourceColumn.cards.findIndex((c) => c.id === cardId);
+        // Dropped over a card → its slot; dropped on empty column area → the end.
+        const targetCardIndex = targetCard
+          ? sourceColumn.cards.findIndex((c) => c.id === overId)
+          : sourceColumn.cards.length - 1;
 
-        if (targetCardIndex === -1 || sourceCardIndex === -1 || targetCardIndex === sourceCardIndex) {
+        if (sourceCardIndex === -1 || targetCardIndex === -1 || targetCardIndex === sourceCardIndex) {
           return;
         }
 

@@ -1,4 +1,5 @@
 import uuid
+from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,12 +10,16 @@ from app.models import Card, Column
 from app.schemas import BoardOut, CardCreate, CardMove, CardOut, ColumnRename
 from app.seed import seed
 
-Base.metadata.create_all(bind=engine)
 
-with SessionLocal() as db:
-    seed(db)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    with SessionLocal() as db:
+        seed(db)
+    yield
 
-app = FastAPI(title="Kanban API")
+
+app = FastAPI(title="Kanban API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
