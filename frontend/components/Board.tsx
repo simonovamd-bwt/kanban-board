@@ -136,7 +136,9 @@ function Board({ board, onUpdateBoard }: BoardProps) {
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6" style={{ color: '#032147' }}>Kanban Board</h1>
+        <h1 className="text-3xl font-bold mb-6" style={{ color: '#f5f5f7' }}>
+          Kanban Board
+        </h1>
         <div className="flex gap-4 overflow-x-auto pb-4">
           {board.columns.map((column) => (
             <Column
@@ -151,9 +153,9 @@ function Board({ board, onUpdateBoard }: BoardProps) {
       </div>
       <DragOverlay>
         {activeCard ? (
-          <div className="bg-white border-2 rounded-lg p-4 shadow-lg opacity-90 rotate-1" style={{ borderColor: '#ecad0a' }}>
-            <h3 className="font-semibold text-lg" style={{ color: '#032147' }}>{activeCard.title}</h3>
-            <p className="text-sm" style={{ color: '#888888' }}>{activeCard.details}</p>
+          <div className="border-2 rounded-lg p-4 shadow-lg opacity-95 rotate-1" style={{ backgroundColor: '#1e1d28', borderColor: '#fd7e14' }}>
+            <h3 className="font-semibold text-lg" style={{ color: '#f5f5f7' }}>{activeCard.title}</h3>
+            <p className="text-sm" style={{ color: '#667085' }}>{activeCard.details}</p>
           </div>
         ) : null}
       </DragOverlay>

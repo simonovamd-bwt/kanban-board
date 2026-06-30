@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:backend": "cd ../backend && .venv/bin/uvicorn app.main:app --reload",
+    "dev:all": "concurrently -n backend,frontend -c yellow,cyan \"npm run dev:backend\" \"npm run dev\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -31,6 +33,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
+    "concurrently": "^9.1.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

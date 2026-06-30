@@ -45,7 +45,7 @@ function Column({ column, onRename, onDeleteCard, onAddCard }: ColumnProps) {
   };
 
   return (
-    <div ref={setNodeRef} className="bg-gray-50 rounded-lg p-4 min-w-[280px] flex flex-col h-fit">
+    <div ref={setNodeRef} className="rounded-lg p-4 min-w-[280px] flex flex-col h-fit" style={{ backgroundColor: '#1e1d28' }}>
       <div className="mb-4">
         {isRenaming ? (
           <TextField
@@ -60,17 +60,17 @@ function Column({ column, onRename, onDeleteCard, onAddCard }: ColumnProps) {
               '& .MuiInputBase-input': {
                 fontSize: '1.125rem',
                 fontWeight: 600,
-                color: '#209dd7',
+                color: '#fd7e14',
                 padding: '4px 0',
               },
               '& .MuiInput-underline:before': {
-                borderBottomColor: '#209dd7',
+                borderBottomColor: '#fd7e14',
               },
               '& .MuiInput-underline:hover:before': {
-                borderBottomColor: '#1a7ba8',
+                borderBottomColor: '#e96f08',
               },
               '& .MuiInput-underline:after': {
-                borderBottomColor: '#209dd7',
+                borderBottomColor: '#fd7e14',
               },
             }}
           />
@@ -78,13 +78,13 @@ function Column({ column, onRename, onDeleteCard, onAddCard }: ColumnProps) {
           <div className="flex items-center justify-between">
             <h2
               className="text-lg font-semibold cursor-pointer flex-1 transition-colors"
-              style={{ color: '#209dd7' }}
+              style={{ color: '#fd7e14' }}
               onClick={() => setIsRenaming(true)}
               onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#1a7ba8';
+                e.currentTarget.style.color = '#e96f08';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#209dd7';
+                e.currentTarget.style.color = '#fd7e14';
               }}
               title="Click to rename"
             >

@@ -31,8 +31,8 @@ function Card({ card, columnId, onDelete }: CardProps) {
   return (
     <div
       ref={setNodeRef}
-      style={style}
-      className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow mb-3"
+      style={{ ...style, backgroundColor: '#060813', borderColor: '#2a2b38' }}
+      className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow mb-3"
     >
       <div className="flex justify-between items-start mb-2">
         <div
@@ -40,7 +40,7 @@ function Card({ card, columnId, onDelete }: CardProps) {
           {...listeners}
           className="flex-1 cursor-grab active:cursor-grabbing"
         >
-          <h3 className="font-semibold text-lg" style={{ color: '#032147' }}>{card.title}</h3>
+          <h3 className="font-semibold text-lg" style={{ color: '#f5f5f7' }}>{card.title}</h3>
         </div>
         <IconButton
           size="small"
@@ -51,8 +51,8 @@ function Card({ card, columnId, onDelete }: CardProps) {
           }}
           onMouseDown={(e) => e.stopPropagation()}
           sx={{
-            color: '#888888',
-            '&:hover': { color: '#d32f2f', backgroundColor: 'rgba(211, 47, 47, 0.04)' },
+            color: '#667085',
+            '&:hover': { color: '#ff6b6b', backgroundColor: 'rgba(255, 107, 107, 0.08)' },
           }}
           aria-label={`Delete ${card.title}`}
         >
@@ -60,7 +60,7 @@ function Card({ card, columnId, onDelete }: CardProps) {
         </IconButton>
       </div>
       <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
-        <p className="text-sm" style={{ color: '#888888' }}>{card.details}</p>
+        <p className="text-sm" style={{ color: '#667085' }}>{card.details}</p>
       </div>
     </div>
   );

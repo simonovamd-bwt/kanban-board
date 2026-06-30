@@ -12,14 +12,20 @@ const Board = dynamic(() => import('@/components/Board'), {
 
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
-      main: '#209dd7',
+      main: '#fd7e14',
     },
     secondary: {
-      main: '#753991',
+      main: '#017bec',
     },
     background: {
-      default: '#ffffff',
+      default: '#060813',
+      paper: '#1e1d28',
+    },
+    text: {
+      primary: '#f5f5f7',
+      secondary: '#667085',
     },
   },
 });
@@ -33,9 +39,9 @@ export default function Home() {
 
   if (!board) {
     return (
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen" style={{ backgroundColor: '#060813' }}>
         <div className="flex items-center justify-center min-h-screen">
-          <div style={{ color: '#888888' }}>Loading...</div>
+          <div style={{ color: '#667085' }}>Loading...</div>
         </div>
       </main>
     );
@@ -43,7 +49,7 @@ export default function Home() {
 
   return (
     <ThemeProvider theme={theme}>
-      <main className="min-h-screen bg-white">
+      <main className="min-h-screen" style={{ backgroundColor: '#060813' }}>
         <Board board={board} onUpdateBoard={setBoard} />
       </main>
     </ThemeProvider>

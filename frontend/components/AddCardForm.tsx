@@ -31,12 +31,12 @@ function AddCardForm({ onAdd }: AddCardFormProps) {
         startIcon={<AddIcon />}
         onClick={() => setIsOpen(true)}
         sx={{
-          borderColor: '#209dd7',
-          color: '#209dd7',
+          borderColor: '#fd7e14',
+          color: '#fd7e14',
           borderStyle: 'dashed',
           '&:hover': {
-            borderColor: '#1a7ba8',
-            backgroundColor: 'rgba(32, 157, 215, 0.04)',
+            borderColor: '#e96f08',
+            backgroundColor: 'rgba(253, 126, 20, 0.08)',
           },
         }}
       >
@@ -50,8 +50,8 @@ function AddCardForm({ onAdd }: AddCardFormProps) {
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        bgcolor: 'white',
-        border: '1px solid #e0e0e0',
+        bgcolor: '#060813',
+        border: '1px solid #2a2b38',
         borderRadius: 2,
         p: 2,
         boxShadow: 1,
@@ -82,8 +82,10 @@ function AddCardForm({ onAdd }: AddCardFormProps) {
           variant="contained"
           fullWidth
           sx={{
-            bgcolor: '#753991',
-            '&:hover': { bgcolor: '#5d2d73' },
+            bgcolor: '#fd7e14',
+            color: '#060813',
+            fontWeight: 600,
+            '&:hover': { bgcolor: '#e96f08' },
           }}
         >
           Add Card
@@ -96,7 +98,7 @@ function AddCardForm({ onAdd }: AddCardFormProps) {
             setTitle('');
             setDetails('');
           }}
-          sx={{ color: '#888888', borderColor: '#e0e0e0' }}
+          sx={{ color: '#667085', borderColor: '#2a2b38' }}
         >
           Cancel
         </Button>
