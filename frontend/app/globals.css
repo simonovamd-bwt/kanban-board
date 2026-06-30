@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* GroupBWT brand palette (dark) */
+  /* GroupBWT brand palette (dark) — single source of truth */
   --background: #060813;
   --surface: #1e1d28;
   --surface-alt: #32373c;
@@ -10,6 +10,7 @@
   --accent-hover: #e96f08;
   --gray-text: #667085;
   --border: #2a2b38;
+  --danger: #ff6b6b;
 }
 
 @theme inline {
@@ -18,8 +19,10 @@
   --color-surface-alt: var(--surface-alt);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-gray-text: var(--gray-text);
   --color-border: var(--border);
+  --color-danger: var(--danger);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -27,7 +30,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
   margin: 0;
   padding: 0;
 }

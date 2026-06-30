@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, memo } from 'react';
-import { Button, TextField, Box } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 
 interface AddCardFormProps {
   onAdd: (title: string, details: string) => void;
@@ -23,87 +21,62 @@ function AddCardForm({ onAdd }: AddCardFormProps) {
     }
   };
 
+  const handleCancel = () => {
+    setIsOpen(false);
+    setTitle('');
+    setDetails('');
+  };
+
   if (!isOpen) {
     return (
-      <Button
-        fullWidth
-        variant="outlined"
-        startIcon={<AddIcon />}
+      <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        sx={{
-          borderColor: '#fd7e14',
-          color: '#fd7e14',
-          borderStyle: 'dashed',
-          '&:hover': {
-            borderColor: '#e96f08',
-            backgroundColor: 'rgba(253, 126, 20, 0.08)',
-          },
-        }}
+        className="w-full flex items-center justify-center gap-2 rounded-lg border border-dashed border-accent text-accent py-2 font-medium transition-colors hover:border-accent-hover hover:bg-accent/10"
       >
-        Add Card
-      </Button>
+        <span className="text-lg leading-none">+</span> Add Card
+      </button>
     );
   }
 
   return (
-    <Box
-      component="form"
+    <form
       onSubmit={handleSubmit}
-      sx={{
-        bgcolor: '#060813',
-        border: '1px solid #2a2b38',
-        borderRadius: 2,
-        p: 2,
-        boxShadow: 1,
-      }}
+      className="bg-background border border-border rounded-lg p-3 shadow"
     >
-      <TextField
-        fullWidth
-        size="small"
+      <input
+        type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Card title"
         autoFocus
-        sx={{ mb: 1.5 }}
+        aria-label="Card title"
+        className="w-full mb-2 rounded border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-gray-text outline-none focus:border-accent"
       />
-      <TextField
-        fullWidth
-        multiline
+      <textarea
         rows={3}
-        size="small"
         value={details}
         onChange={(e) => setDetails(e.target.value)}
         placeholder="Card details"
-        sx={{ mb: 2 }}
+        aria-label="Card details"
+        className="w-full mb-3 rounded border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-gray-text outline-none focus:border-accent resize-none"
       />
-      <Box sx={{ display: 'flex', gap: 1 }}>
-        <Button
+      <div className="flex gap-2">
+        <button
           type="submit"
-          variant="contained"
-          fullWidth
-          sx={{
-            bgcolor: '#fd7e14',
-            color: '#060813',
-            fontWeight: 600,
-            '&:hover': { bgcolor: '#e96f08' },
-          }}
+          className="flex-1 rounded bg-accent px-3 py-2 text-sm font-semibold text-background transition-colors hover:bg-accent-hover"
         >
           Add Card
-        </Button>
-        <Button
+        </button>
+        <button
           type="button"
-          variant="outlined"
-          onClick={() => {
-            setIsOpen(false);
-            setTitle('');
-            setDetails('');
-          }}
-          sx={{ color: '#667085', borderColor: '#2a2b38' }}
+          onClick={handleCancel}
+          className="rounded border border-border px-3 py-2 text-sm text-gray-text transition-colors hover:text-foreground"
         >
           Cancel
-        </Button>
-      </Box>
-    </Box>
+        </button>
+      </div>
+    </form>
   );
 }
 

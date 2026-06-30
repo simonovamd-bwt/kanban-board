@@ -3,8 +3,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Card as CardType } from '@/types';
-import { IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { memo } from 'react';
 
 interface CardProps {
@@ -31,36 +29,38 @@ function Card({ card, columnId, onDelete }: CardProps) {
   return (
     <div
       ref={setNodeRef}
-      style={{ ...style, backgroundColor: '#060813', borderColor: '#2a2b38' }}
-      className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow mb-3"
+      style={style}
+      className="border border-border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow mb-3 bg-background"
     >
-      <div className="flex justify-between items-start mb-2">
+      <div className="flex justify-between items-start gap-2">
         <div
           {...attributes}
           {...listeners}
           className="flex-1 cursor-grab active:cursor-grabbing"
         >
-          <h3 className="font-semibold text-lg" style={{ color: '#f5f5f7' }}>{card.title}</h3>
+          <h3 className="font-semibold text-lg text-foreground">{card.title}</h3>
+          {card.details && <p className="text-sm text-gray-text mt-1">{card.details}</p>}
         </div>
-        <IconButton
-          size="small"
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            onDelete(card.id);
-          }}
-          onMouseDown={(e) => e.stopPropagation()}
-          sx={{
-            color: '#667085',
-            '&:hover': { color: '#ff6b6b', backgroundColor: 'rgba(255, 107, 107, 0.08)' },
-          }}
+        <button
+          type="button"
+          onClick={() => onDelete(card.id)}
           aria-label={`Delete ${card.title}`}
+          className="shrink-0 rounded p-1 text-gray-text transition-colors hover:text-danger hover:bg-danger/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-danger"
         >
-          <DeleteIcon fontSize="small" />
-        </IconButton>
-      </div>
-      <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing">
-        <p className="text-sm" style={{ color: '#667085' }}>{card.details}</p>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 5v6m4-6v6" />
+          </svg>
+        </button>
       </div>
     </div>
   );

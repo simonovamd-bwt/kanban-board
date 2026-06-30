@@ -1,23 +1,45 @@
 import { Board, Card } from '@/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const DEFAULT_TIMEOUT_MS = 10000;
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE_URL}/api${path}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...options,
-  });
-  if (!res.ok) {
-    throw new Error(`API ${res.status}: ${path}`);
-  }
-  if (res.status === 204) {
-    return undefined as T;
-  }
-  return res.json() as Promise<T>;
+interface RequestOptions extends RequestInit {
+  /** Abort the request after this many ms (default 10s). */
+  timeoutMs?: number;
 }
 
-export function getBoard(): Promise<Board> {
-  return request<Board>('/board');
+async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const { timeoutMs = DEFAULT_TIMEOUT_MS, signal, ...init } = options;
+
+  // Combine the caller's signal (if any) with our timeout so either can abort.
+  const timeoutController = new AbortController();
+  const timer = setTimeout(() => timeoutController.abort(), timeoutMs);
+  const signals = [timeoutController.signal, signal].filter(Boolean) as AbortSignal[];
+  const combined =
+    signals.length > 1 && typeof AbortSignal.any === 'function'
+      ? AbortSignal.any(signals)
+      : signals[0];
+
+  try {
+    const res = await fetch(`${BASE_URL}/api${path}`, {
+      headers: { 'Content-Type': 'application/json' },
+      signal: combined,
+      ...init,
+    });
+    if (!res.ok) {
+      throw new Error(`API ${res.status}: ${path}`);
+    }
+    if (res.status === 204) {
+      return undefined as T;
+    }
+    return (await res.json()) as T;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+export function getBoard(signal?: AbortSignal): Promise<Board> {
+  return request<Board>('/board', { signal });
 }
 
 export function renameColumn(columnId: string, title: string): Promise<unknown> {
