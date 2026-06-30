@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { ThemeProvider, createTheme } from '@mui/material';
+import { ThemeProvider, createTheme, Button } from '@mui/material';
 import { getBoard } from '@/lib/api';
 import { Board as BoardType } from '@/types';
 
@@ -30,14 +30,31 @@ const theme = createTheme({
   },
 });
 
+type Status = 'loading' | 'error' | 'ready';
+
 export default function Home() {
   const [board, setBoard] = useState<BoardType | null>(null);
+  const [status, setStatus] = useState<Status>('loading');
 
-  useEffect(() => {
-    getBoard().then(setBoard);
+  const fetchBoard = useCallback(() => {
+    getBoard()
+      .then((data) => {
+        setBoard(data);
+        setStatus('ready');
+      })
+      .catch(() => setStatus('error'));
   }, []);
 
-  if (!board) {
+  useEffect(() => {
+    fetchBoard();
+  }, [fetchBoard]);
+
+  const handleRetry = () => {
+    setStatus('loading');
+    fetchBoard();
+  };
+
+  if (status === 'loading') {
     return (
       <main className="min-h-screen" style={{ backgroundColor: '#060813' }}>
         <div className="flex items-center justify-center min-h-screen">
@@ -47,10 +64,30 @@ export default function Home() {
     );
   }
 
+  if (status === 'error') {
+    return (
+      <ThemeProvider theme={theme}>
+        <main className="min-h-screen" style={{ backgroundColor: '#060813' }}>
+          <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-6 text-center">
+            <h2 className="text-xl font-semibold" style={{ color: '#f5f5f7' }}>
+              Cannot reach the server
+            </h2>
+            <p className="text-sm max-w-sm" style={{ color: '#667085' }}>
+              Make sure the backend is running on http://localhost:8000, then try again.
+            </p>
+            <Button variant="contained" onClick={handleRetry} sx={{ color: '#060813', fontWeight: 600 }}>
+              Retry
+            </Button>
+          </div>
+        </main>
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <main className="min-h-screen" style={{ backgroundColor: '#060813' }}>
-        <Board board={board} onUpdateBoard={setBoard} />
+        <Board board={board!} onUpdateBoard={setBoard} />
       </main>
     </ThemeProvider>
   );
