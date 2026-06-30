@@ -1,7 +1,10 @@
 import { test, expect } from '@playwright/test';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 test.describe('Kanban Board', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page, request }) => {
+    await request.post(`${API_URL}/api/reset`);
     await page.goto('/');
     await expect(page.getByRole('heading', { name: 'Kanban Board' })).toBeVisible();
   });

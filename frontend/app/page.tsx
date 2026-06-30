@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ThemeProvider, createTheme } from '@mui/material';
-import { generateDummyData } from '@/lib/utils';
+import { getBoard } from '@/lib/api';
 import { Board as BoardType } from '@/types';
 
 const Board = dynamic(() => import('@/components/Board'), {
@@ -25,15 +25,13 @@ const theme = createTheme({
 });
 
 export default function Home() {
-  const initialBoard = useMemo(() => generateDummyData(), []);
-  const [board, setBoard] = useState<BoardType>(initialBoard);
-  const [mounted, setMounted] = useState(false);
+  const [board, setBoard] = useState<BoardType | null>(null);
 
   useEffect(() => {
-    setMounted(true);
+    getBoard().then(setBoard);
   }, []);
 
-  if (!mounted) {
+  if (!board) {
     return (
       <main className="min-h-screen bg-white">
         <div className="flex items-center justify-center min-h-screen">

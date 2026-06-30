@@ -4,6 +4,7 @@ import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/
 import { Board as BoardType } from '@/types';
 import Column from './Column';
 import { useState, memo, useCallback } from 'react';
+import * as api from '@/lib/api';
 
 interface BoardProps {
   board: BoardType;
@@ -21,6 +22,7 @@ function Board({ board, onUpdateBoard }: BoardProps) {
       ),
     };
     onUpdateBoard(updatedBoard);
+    api.renameColumn(columnId, newTitle);
   }, [board, onUpdateBoard]);
 
   const handleDeleteCard = useCallback((cardId: string) => {
@@ -32,14 +34,11 @@ function Board({ board, onUpdateBoard }: BoardProps) {
       })),
     };
     onUpdateBoard(updatedBoard);
+    api.deleteCard(cardId);
   }, [board, onUpdateBoard]);
 
-  const handleAddCard = useCallback((columnId: string, title: string, details: string) => {
-    const newCard = {
-      id: `card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      title,
-      details,
-    };
+  const handleAddCard = useCallback(async (columnId: string, title: string, details: string) => {
+    const newCard = await api.addCard(columnId, title, details);
 
     const updatedBoard = {
       ...board,
@@ -96,12 +95,18 @@ function Board({ board, onUpdateBoard }: BoardProps) {
         ),
       };
       onUpdateBoard(updatedBoard);
+      api.moveCard(cardId, targetColumnId, targetCardIndex);
       return;
     }
 
     if (sourceColumnId !== targetColumnId) {
       const finalTargetColumn = board.columns.find((col) => col.id === targetColumnId);
       if (!finalTargetColumn) return;
+
+      // Insert at the dropped-over card's position, or append when dropping on the column.
+      const targetPosition = targetCard
+        ? finalTargetColumn.cards.findIndex((c) => c.id === overId)
+        : finalTargetColumn.cards.length;
 
       const updatedBoard = {
         ...board,
@@ -110,12 +115,15 @@ function Board({ board, onUpdateBoard }: BoardProps) {
             return { ...col, cards: col.cards.filter((c) => c.id !== cardId) };
           }
           if (col.id === targetColumnId) {
-            return { ...col, cards: [...col.cards, card] };
+            const newCards = [...col.cards];
+            newCards.splice(targetPosition, 0, card);
+            return { ...col, cards: newCards };
           }
           return col;
         }),
       };
       onUpdateBoard(updatedBoard);
+      api.moveCard(cardId, targetColumnId, targetPosition);
     }
   }, [board, onUpdateBoard]);
 
