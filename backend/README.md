@@ -20,6 +20,15 @@ uvicorn app.main:app --reload
 API runs on http://localhost:8000. The database is created and seeded with dummy
 data on first start.
 
+## Test
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+Tests run against an in-memory database and never touch `data/kanban.db`.
+
 ## Endpoints
 
 - `GET /api/board` - full board with columns and cards
