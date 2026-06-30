@@ -3,7 +3,6 @@
 import { useState, memo } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { TextField } from '@mui/material';
 import { Column as ColumnType } from '@/types';
 import Card from './Card';
 import AddCardForm from './AddCardForm';
@@ -44,53 +43,36 @@ function Column({ column, onRename, onDeleteCard, onAddCard }: ColumnProps) {
     }
   };
 
+  const startRenaming = () => {
+    setEditTitle(column.title);
+    setIsRenaming(true);
+  };
+
   return (
-    <div ref={setNodeRef} className="rounded-lg p-4 min-w-[280px] flex flex-col h-fit" style={{ backgroundColor: '#1e1d28' }}>
+    <div ref={setNodeRef} className="rounded-lg p-4 min-w-[280px] flex flex-col h-fit bg-surface">
       <div className="mb-4">
         {isRenaming ? (
-          <TextField
-            fullWidth
+          <input
+            type="text"
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
             onBlur={handleRename}
             onKeyDown={handleKeyDown}
             autoFocus
-            variant="standard"
-            sx={{
-              '& .MuiInputBase-input': {
-                fontSize: '1.125rem',
-                fontWeight: 600,
-                color: '#fd7e14',
-                padding: '4px 0',
-              },
-              '& .MuiInput-underline:before': {
-                borderBottomColor: '#fd7e14',
-              },
-              '& .MuiInput-underline:hover:before': {
-                borderBottomColor: '#e96f08',
-              },
-              '& .MuiInput-underline:after': {
-                borderBottomColor: '#fd7e14',
-              },
-            }}
+            aria-label="Column title"
+            className="w-full bg-transparent text-lg font-semibold text-accent border-b border-accent outline-none py-1"
           />
         ) : (
-          <div className="flex items-center justify-between">
-            <h2
-              className="text-lg font-semibold cursor-pointer flex-1 transition-colors"
-              style={{ color: '#fd7e14' }}
-              onClick={() => setIsRenaming(true)}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#e96f08';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#fd7e14';
-              }}
+          <h2 className="text-lg font-semibold">
+            <button
+              type="button"
+              onClick={startRenaming}
               title="Click to rename"
+              className="text-accent hover:text-accent-hover transition-colors text-left w-full"
             >
               {column.title}
-            </h2>
-          </div>
+            </button>
+          </h2>
         )}
       </div>
 
