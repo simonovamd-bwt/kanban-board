@@ -56,6 +56,13 @@ export function addCard(columnId: string, title: string, details: string): Promi
   });
 }
 
+export function updateCard(cardId: string, title: string, details: string): Promise<Card> {
+  return request<Card>(`/cards/${cardId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ title, details }),
+  });
+}
+
 export function deleteCard(cardId: string): Promise<unknown> {
   return request(`/cards/${cardId}`, { method: 'DELETE' });
 }
