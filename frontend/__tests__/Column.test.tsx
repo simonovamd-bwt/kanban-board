@@ -26,6 +26,7 @@ describe('Column', () => {
         column={mockColumn}
         onRename={onRename}
         onDeleteCard={onDeleteCard}
+        onUpdateCard={jest.fn()}
         onAddCard={onAddCard}
       />
     );
@@ -43,6 +44,7 @@ describe('Column', () => {
         column={mockColumn}
         onRename={onRename}
         onDeleteCard={onDeleteCard}
+        onUpdateCard={jest.fn()}
         onAddCard={onAddCard}
       />
     );
@@ -61,6 +63,7 @@ describe('Column', () => {
         column={mockColumn}
         onRename={onRename}
         onDeleteCard={onDeleteCard}
+        onUpdateCard={jest.fn()}
         onAddCard={onAddCard}
       />
     );
@@ -89,6 +92,7 @@ describe('Column', () => {
         column={mockColumn}
         onRename={onRename}
         onDeleteCard={onDeleteCard}
+        onUpdateCard={jest.fn()}
         onAddCard={onAddCard}
       />
     );

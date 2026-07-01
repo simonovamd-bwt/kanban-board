@@ -66,6 +66,22 @@ function Board({ board, onUpdateBoard }: BoardProps) {
     [onUpdateBoard, resync]
   );
 
+  const handleUpdateCard = useCallback(
+    (cardId: string, title: string, details: string) => {
+      onUpdateBoard((prev) => ({
+        ...prev,
+        columns: prev.columns.map((col) => ({
+          ...col,
+          cards: col.cards.map((card) =>
+            card.id === cardId ? { ...card, title, details } : card
+          ),
+        })),
+      }));
+      api.updateCard(cardId, title, details).catch(() => resync('Could not update card.'));
+    },
+    [onUpdateBoard, resync]
+  );
+
   const handleDeleteCard = useCallback(
     (cardId: string) => {
       onUpdateBoard((prev) => ({
@@ -210,6 +226,7 @@ function Board({ board, onUpdateBoard }: BoardProps) {
               column={column}
               onRename={handleRenameColumn}
               onDeleteCard={handleDeleteCard}
+              onUpdateCard={handleUpdateCard}
               onAddCard={handleAddCard}
             />
           ))}

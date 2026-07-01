@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.database import Base, SessionLocal, engine, get_db
 from app.models import Card, Column
-from app.schemas import BoardOut, CardCreate, CardMove, CardOut, ColumnRename
+from app.schemas import BoardOut, CardCreate, CardMove, CardOut, CardUpdate, ColumnRename
 from app.seed import seed
 
 Base.metadata.create_all(bind=engine)
@@ -76,6 +76,18 @@ def add_card(column_id: str, payload: CardCreate, db: Session = Depends(get_db))
         column_id=column_id,
     )
     db.add(card)
+    db.commit()
+    db.refresh(card)
+    return card
+
+
+@app.patch("/api/cards/{card_id}", response_model=CardOut)
+def update_card(card_id: str, payload: CardUpdate, db: Session = Depends(get_db)):
+    card = db.get(Card, card_id)
+    if not card:
+        raise HTTPException(status_code=404, detail="Card not found")
+    card.title = payload.title
+    card.details = payload.details
     db.commit()
     db.refresh(card)
     return card

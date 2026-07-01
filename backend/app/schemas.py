@@ -26,6 +26,11 @@ class CardCreate(BaseModel):
     details: str = ""
 
 
+class CardUpdate(BaseModel):
+    title: str
+    details: str = ""
+
+
 class ColumnRename(BaseModel):
     title: str
 

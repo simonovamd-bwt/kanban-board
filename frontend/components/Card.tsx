@@ -3,21 +3,27 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Card as CardType } from '@/types';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 
 interface CardProps {
   card: CardType;
   columnId: string;
   onDelete: (cardId: string) => void;
+  onUpdate: (cardId: string, title: string, details: string) => void;
 }
 
-function Card({ card, columnId, onDelete }: CardProps) {
+function Card({ card, columnId, onDelete, onUpdate }: CardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(card.title);
+  const [details, setDetails] = useState(card.details);
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: card.id,
     data: {
       columnId,
       card,
     },
+    disabled: isEditing,
   });
 
   const style = {
@@ -25,6 +31,69 @@ function Card({ card, columnId, onDelete }: CardProps) {
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
+
+  const startEditing = () => {
+    setTitle(card.title);
+    setDetails(card.details);
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    if (title.trim()) {
+      onUpdate(card.id, title.trim(), details.trim());
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setTitle(card.title);
+    setDetails(card.details);
+    setIsEditing(false);
+  };
+
+  if (isEditing) {
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className="border border-accent rounded-lg p-3 shadow-sm mb-3 bg-background"
+      >
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Card title"
+          autoFocus
+          aria-label="Card title"
+          className="w-full mb-2 rounded border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-gray-text outline-none focus:border-accent"
+        />
+        <textarea
+          rows={3}
+          value={details}
+          onChange={(e) => setDetails(e.target.value)}
+          placeholder="Card details"
+          aria-label="Card details"
+          className="w-full mb-3 rounded border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-gray-text outline-none focus:border-accent resize-none"
+        />
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleSave}
+            className="flex-1 rounded bg-accent px-3 py-2 text-sm font-semibold text-background transition-colors hover:bg-accent-hover"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={handleCancel}
+            className="rounded border border-border px-3 py-2 text-sm text-gray-text transition-colors hover:text-foreground"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -36,6 +105,7 @@ function Card({ card, columnId, onDelete }: CardProps) {
         <div
           {...attributes}
           {...listeners}
+          onClick={startEditing}
           className="flex-1 cursor-grab active:cursor-grabbing"
         >
           <h3 className="font-semibold text-lg text-foreground">{card.title}</h3>

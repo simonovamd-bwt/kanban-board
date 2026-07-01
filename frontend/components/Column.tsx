@@ -11,10 +11,11 @@ interface ColumnProps {
   column: ColumnType;
   onRename: (columnId: string, newTitle: string) => void;
   onDeleteCard: (cardId: string) => void;
+  onUpdateCard: (cardId: string, title: string, details: string) => void;
   onAddCard: (columnId: string, title: string, details: string) => void;
 }
 
-function Column({ column, onRename, onDeleteCard, onAddCard }: ColumnProps) {
+function Column({ column, onRename, onDeleteCard, onUpdateCard, onAddCard }: ColumnProps) {
   const [isRenaming, setIsRenaming] = useState(false);
   const [editTitle, setEditTitle] = useState(column.title);
 
@@ -79,7 +80,13 @@ function Column({ column, onRename, onDeleteCard, onAddCard }: ColumnProps) {
       <SortableContext items={column.cards.map((card) => card.id)} strategy={verticalListSortingStrategy}>
         <div className="flex-1 space-y-2 mb-4">
           {column.cards.map((card) => (
-            <Card key={card.id} card={card} columnId={column.id} onDelete={onDeleteCard} />
+            <Card
+              key={card.id}
+              card={card}
+              columnId={column.id}
+              onDelete={onDeleteCard}
+              onUpdate={onUpdateCard}
+            />
           ))}
         </div>
       </SortableContext>
